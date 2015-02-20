@@ -27,6 +27,7 @@ h1, h2, ol {
 }
 
 .fees {
-	font-family: "Lucida Console", Arial;
+	font-family: Helvetica, Arial;
 	font-size: 14px;
+	color: #888;
 }

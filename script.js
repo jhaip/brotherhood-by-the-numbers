@@ -23,18 +23,19 @@ function setUpTangle () {
 
             this.budget_housetotal =  {"FALL2014": 81150.00, "SPRING2015": 81650.00};
             this.budget_brothertotal = {"FALL2014": 23259.53,"SPRING2015": 25833.75};
-            this.prev_housebill = {"FALL2014": 3925.00};
+            this.prev_housebill = {"FALL2014": 3925.00,"SPRING2015":3975.00};
 
-            this.numMMOutOfHouse = 1;
-            this.numCWOutOfHouse = 3;
-            this.numJBOutOfHouse = 0;
+            this.mm_outhouse = 1;
+            this.cw_outhouse = 3;
+            this.jb_outhouse = 0;
 
             this.classSizeIncrease = 2;
             this.noPayHouseBill = 1;
 
             this.a_nbro_outhouse = 5;
+            this.a_newbros = 12;
 
-            this.nbros = 38;
+            this.nbros = {"FALL2014":29,"SPRING2015":38,"FALL2015":29};
         },
         update: function () {
 
@@ -49,31 +50,33 @@ function setUpTangle () {
             }
 
             /* Examining Fall 2015 */
+            this.bylaw_satisfied = (this.mm_outhouse+this.jb_outhouse == 0 && this.cw_outhouse <= 1) ? 1 : 0;
+            var SEMESTER = "FALL2014";
 
-            this.bylaw_satisfied = (this.numMMOutOfHouse+this.numJBOutOfHouse == 0 && this.numCWOutOfHouse <= 1) ? 1 : 0;
-            this.base_outbill = this.budget_brothertotal["FALL2014"]/29.;
-            this.base_housebill = this.budget_housetotal["FALL2014"]/Math.max(28,29-this.numMMOutOfHouse-this.numCWOutOfHouse-this.numJBOutOfHouse)+this.base_outbill;
-            this.base_housebill_improvement = this.prev_housebill["FALL2014"]-this.base_housebill;
+            this.base_outbill = this.budget_brothertotal[SEMESTER]/this.nbros[SEMESTER];
+            this.base_housebill = this.budget_housetotal[SEMESTER]/Math.max(28,this.nbros[SEMESTER]-this.mm_outhouse-this.cw_outhouse-this.jb_outhouse)+this.base_outbill;
+            this.base_housebill_improvement = this.prev_housebill[SEMESTER]-this.base_housebill;
 
-            this.mm_inhouse = 6-this.numMMOutOfHouse;
-            this.mm_totalfine = (6-this.mm_inhouse)*this.base_housebill-this.numMMOutOfHouse*this.base_outbill;
+            this.mm_inhouse = 6-this.mm_outhouse;
+            this.mm_totalfine = (6-this.mm_inhouse)*this.base_housebill-this.mm_outhouse*this.base_outbill;
             this.mm_perbrofine = this.mm_totalfine / 6.;
 
-            this.cw_inhouse = 13-this.numCWOutOfHouse;
-            this.cw_totalfine = (12-this.cw_inhouse)*this.base_housebill-this.numCWOutOfHouse*this.base_outbill;
+            this.cw_inhouse = 13-this.cw_outhouse;
+            this.cw_totalfine = (12-this.cw_inhouse)*this.base_housebill-this.cw_outhouse*this.base_outbill;
             if (this.cw_totalfine < 0) { this.cw_totalfine = 0; }
             this.cw_perbrofine = this.cw_totalfine / 13.;
 
-            this.jb_inhouse = 10-this.numJBOutOfHouse;
-            this.jb_totalfine = (10-this.jb_inhouse)*this.base_housebill-this.numJBOutOfHouse*this.base_outbill;
+            this.jb_inhouse = 10-this.jb_outhouse;
+            this.jb_totalfine = (10-this.jb_inhouse)*this.base_housebill-this.jb_outhouse*this.base_outbill;
             this.jb_perbrofine = this.jb_totalfine / 10.;
 
             this.total_fees = this.mm_totalfine + this.cw_totalfine + this.jb_totalfine;
 
 
             /* A different style of budget meeting */
-            this.a_allin_housebill = (this.budget_housetotal["SPRING2015"] + this.budget_brothertotal["SPRING2015"]) / this.nbros;
-            this.a_inhouse_extrafee = this.budget_housetotal["SPRING2015"] / (this.nbros-this.a_nbro_outhouse) + this.budget_brothertotal["SPRING2015"] / this.nbros - this.a_allin_housebill;
+            this.a_allin_housebill = this.budget_housetotal["SPRING2015"]/this.nbros["FALL2015"]+this.budget_brothertotal["SPRING2015"]/(this.nbros["FALL2015"]+this.a_newbros);
+            this.a_actual_housebill = this.budget_housetotal["SPRING2015"]/(this.nbros["FALL2015"]-this.a_nbro_outhouse)+this.budget_brothertotal["SPRING2015"]/(this.nbros["FALL2015"]+this.a_newbros);
+            this.a_inhouse_extrafee = this.a_actual_housebill - this.a_allin_housebill;
 
         }
     });
