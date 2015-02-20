@@ -25,3 +25,8 @@ blockquote strong {
 h1, h2, ol {
 	font-family: Helvetica, Arial;
 }
+
+.fees {
+	font-family: "Lucida Console", Arial;
+	font-size: 14px;
+}

@@ -5,21 +5,29 @@ function setUpTangle () {
     	return "" + value + " out of " + max_num_bros;
     };
 
+    Tangle.classes.v_if = {
+        //initialize: function (element, options, tangle, variable) { ... },  // optional
+        update: function (element, value) {
+            if (element.hasClass("invertIf")) { value = !value; }
+            element.setStyle("display", !value ? "none" : "initial");//(element.get("tag") == "span") ? "inline" : "block");
+        }
+    };
+
 	function numberWithCommas(x) {
 	    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 	}
 
-    var tangle2 = new Tangle(document.getElementById("example2"), {
+    var tangle2 = new Tangle(document.getElementById("example"), {
         initialize: function () {
-            this.budget_housetotal =  81650.00;
-            this.budget_brothertotal = 25833.75;
+            this.hsin_hsins_eaten = 50;
+
+            this.budget_housetotal =  {"FALL2014": 81150.00, "SPRING2015": 81650.00};
+            this.budget_brothertotal = {"FALL2014": 23259.53,"SPRING2015": 25833.75};
+            this.prev_housebill = {"FALL2014": 3925.00};
 
             this.numMMOutOfHouse = 1;
             this.numCWOutOfHouse = 3;
             this.numJBOutOfHouse = 0;
-
-            this.housebill = 3500;
-            this.outhousebill = 600;
 
             this.classSizeIncrease = 2;
             this.noPayHouseBill = 1;
@@ -29,50 +37,46 @@ function setUpTangle () {
             this.nbros = 38;
         },
         update: function () {
-            this.mm_extrahousebills = Math.max(0,this.numMMOutOfHouse);
-            this.mm_totalfine = this.mm_extrahousebills * this.housebill - this.numMMOutOfHouse * this.outhousebill;
+
+            /* Introduction */
+            if (this.hsin_hsins_eaten <= 20) {
+                this.what_hsin_hsin_did_to_me = "craved more";
+            } else {
+                this.what_hsin_hsin_did_to_me = "gained "+this.hsin_hsins_eaten*0.5+"lbs";
+                if (this.hsin_hsins_eaten > 60) {
+                    this.what_hsin_hsin_did_to_me += " and became fluent in Chinese";
+                }
+            }
+
+            /* Examining Fall 2015 */
+
+            this.bylaw_satisfied = (this.numMMOutOfHouse+this.numJBOutOfHouse == 0 && this.numCWOutOfHouse <= 1) ? 1 : 0;
+            this.base_outbill = this.budget_brothertotal["FALL2014"]/29.;
+            this.base_housebill = this.budget_housetotal["FALL2014"]/Math.max(28,29-this.numMMOutOfHouse-this.numCWOutOfHouse-this.numJBOutOfHouse)+this.base_outbill;
+            this.base_housebill_improvement = this.prev_housebill["FALL2014"]-this.base_housebill;
+
+            this.mm_inhouse = 6-this.numMMOutOfHouse;
+            this.mm_totalfine = (6-this.mm_inhouse)*this.base_housebill-this.numMMOutOfHouse*this.base_outbill;
             this.mm_perbrofine = this.mm_totalfine / 6.;
 
-            this.cw_extrahousebills = Math.max(0,this.numCWOutOfHouse-1);
-            this.cw_totalfine = this.cw_extrahousebills * this.housebill - this.numCWOutOfHouse * this.outhousebill;;
+            this.cw_inhouse = 13-this.numCWOutOfHouse;
+            this.cw_totalfine = (12-this.cw_inhouse)*this.base_housebill-this.numCWOutOfHouse*this.base_outbill;
+            if (this.cw_totalfine < 0) { this.cw_totalfine = 0; }
             this.cw_perbrofine = this.cw_totalfine / 13.;
 
-            this.jb_extrahousebills = Math.max(0,this.numJBOutOfHouse);
-            this.jb_totalfine = this.jb_extrahousebills * this.housebill - this.numJBOutOfHouse * this.outhousebill;;
-            this.bj_perbrofine = this.jb_totalfine / 6.;
+            this.jb_inhouse = 10-this.numJBOutOfHouse;
+            this.jb_totalfine = (10-this.jb_inhouse)*this.base_housebill-this.numJBOutOfHouse*this.base_outbill;
+            this.jb_perbrofine = this.jb_totalfine / 10.;
 
-            if (this.numMMOutOfHouse == 0) {
-            	this.MMrequirement = "would meet the requirement with all brothers living in the house"
-            } else {
-            	this.MMrequirement = "need all of them to live in the house so they would be responsible for paying <strong>"+(this.numMMOutOfHouse)+" extra housebills</strong>"
-            }
+            this.total_fees = this.mm_totalfine + this.cw_totalfine + this.jb_totalfine;
 
-            if (this.numCWOutOfHouse <= 1) {
-            	this.CWrequirement = "would meet the requirement with at least 12 brothers living in the house"
-            } else {
-            	this.CWrequirement = "are allowed one brother living on campus but would be responsible for paying <strong>"+(this.numCWOutOfHouse-1)+" extra housebills</strong>"
-            }
-
-            if (this.numJBOutOfHouse == 0) {
-            	this.JBrequirement = "would meet the requirement with all brothers living in the house"
-            } else {
-            	this.JBrequirement = "need all of them to live in the house so they would be responsible for paying <strong>"+(this.numJBOutOfHouse)+" extra housebills</strong>"
-            }
-
-            var total = this.mm_totalfine + this.cw_totalfine + this.jb_totalfine;
-            this.casesofbeer = total / 15.30;
-            this.dinnersathsinhsin = total / 9.36;
-            this.rushes = total / 12000.;
-
-            this.inhousebill_after_fines = total;
-            this.outhousebill_after_fines = total;
 
             /* A different style of budget meeting */
-            this.a_allin_housebill = (this.budget_housetotal + this.budget_brothertotal) / this.nbros;
-            this.a_inhouse_extrafee = this.budget_housetotal / (this.nbros-this.a_nbro_outhouse) + this.budget_brothertotal / this.nbros - this.a_allin_housebill;
+            this.a_allin_housebill = (this.budget_housetotal["SPRING2015"] + this.budget_brothertotal["SPRING2015"]) / this.nbros;
+            this.a_inhouse_extrafee = this.budget_housetotal["SPRING2015"] / (this.nbros-this.a_nbro_outhouse) + this.budget_brothertotal["SPRING2015"] / this.nbros - this.a_allin_housebill;
 
         }
     });
 
-    
+
 }
