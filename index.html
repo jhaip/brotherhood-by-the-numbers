@@ -93,22 +93,16 @@
 <h2>A different style of budget meeting</h2>
 
 <p>
-Imagine if in the budget meeting instead of differentiating between in house and on 
-campus brothers, we assumed that every eligible brother lived in the house.
-Let us say there are 
-<span data-var="a_newbros" class="TKAdjustableNumber" data-min="5" data-max="18"> new brothers</span>
-who are freshman and required to live on campus and don't count in this number.
+Imagine if we assumed that every brother would live in the house.
 For Spring 2015 this would have meant a house bill of 
 $<strong><span data-var="a_allin_housebill" data-format="%.0f"></span></strong> 
 instead of the actual $3975.  Let’s say 
 <span data-var="a_nbro_outhouse" class="TKAdjustableNumber" data-min="1" data-max="20"> brothers</span> 
-then announced that they did not want to live in the house.  Lack of contribution by 
-the brothers living out of the house would be moved to the brothers living in the house.
-Every in house brother would have to write an addition check for 
+then announced that they did not want to live in the house.
+To make up for the missing house bills every in house brother would have to write an addition check for 
 <strong>$<span data-var="a_inhouse_extrafee" data-format="%.0f"></span></strong>.  
-Perhaps the brothers' reasons for not moving in the house would convince everyone to pick up the 
-$<span data-var="a_inhouse_extrafee" data-format="%.0f">, perhaps not.  People deciding 
-to live on campus isn’t seen this way, but this is what is happening.  
+Maybe the brothers' reasons for not moving in would convince everyone else to pick up the 
+$<span data-var="a_inhouse_extrafee" data-format="%.0f">, maybe not.
 Would you pay for another brother to live on campus?
     </p>
 
@@ -125,26 +119,26 @@ How does this affect rush?
 <div class="highlight">
 
 <div id="modelHeading">
-<span data-var="m_semester_num" class="TKAdjustableNumber"data-format="semesterDrag" data-min=0 data-max=10></span>
+<span data-var="m_semester_num" class="TKAdjustableNumber"data-format="semesterDrag" data-min=0 data-max=10></span> Semester
 </div>
 
 <table id="modelTable">
 <tr>
     <td><span data-var="m_senior_name"></span>: </td>
     <td><span data-var="m_senior_size" class="TKAdjustableNumber" data-min="0" data-max="25"> brothers</span>, </td>
-    <td><span data-var="m_senior_out_house" class="TKAdjustableNumber" data-min="0" data-max="25"> out of house</span></td>
+    <td><span data-var="m_senior_out_house" class="TKAdjustableNumber" data-min="0" data-max="25" data-format="liveOnCampus"></span></td>
     <td><span data-var="m_senior_violating_bylaw" class="v_if violateBylaw">*Violating Bylaw</span></td>
 </tr>
 <tr>
     <td><span data-var="m_junior_name"></span>: </td>
     <td><span data-var="m_junior_size" class="TKAdjustableNumber" data-min="0" data-max="25"> brothers</span>, </td>
-    <td><span data-var="m_junior_out_house" class="TKAdjustableNumber" data-min="0" data-max="25"> out of house</span></td>
+    <td><span data-var="m_junior_out_house" class="TKAdjustableNumber" data-min="0" data-max="25" data-format="liveOnCampus"></span></td>
     <td><span data-var="m_junior_violating_bylaw" class="v_if violateBylaw">*Violating Bylaw</span></td>
 </tr>
 <tr>
     <td><span data-var="m_sophomore_name"></span>: </td>
     <td><span data-var="m_sophomore_size" class="TKAdjustableNumber" data-min="0" data-max="25"> brothers</span>, </td>
-    <td><span data-var="m_sophomore_out_house" class="TKAdjustableNumber" data-min="0" data-max="25"> out of house</span></td>
+    <td><span data-var="m_sophomore_out_house" class="TKAdjustableNumber" data-min="0" data-max="25" data-format="liveOnCampus"></span></td>
     <td><span data-var="m_sophomore_violating_bylaw" class="v_if violateBylaw">*Violating Bylaw</span></td>
 </tr>
 <tr>

@@ -22,7 +22,13 @@ function setUpTangle () {
         str += (2015+Math.floor(value/2)).toString();
         str += " ";
         str += (value % 2 == 0) ? "Spring" : "Fall";
-        str += " Semester";
+        return str;
+    }
+
+    Tangle.formats.liveOnCampus = function(value) {
+        var str = value.toString();
+        str += (value == 1) ? " lives " : " live ";
+        str += "on campus";
         return str;
     }
 
@@ -75,7 +81,20 @@ function setUpTangle () {
             this.initModel();
         },
         initModel: function() {
+            this.m_class_info ={2015:{"name":"Circle Jackers", "size":11, "oncampus":1},
+                                2016:{"name":"Minute Men",     "size":6,  "oncampus":1},
+                                2017:{"name":"Chilly Willies", "size":13, "oncampus":3},
+                                2018:{"name":"Jailbaters",     "size":10, "oncampus":0},
+                                2019:{"name":"",               "size":12, "oncampus":0},
+                                2020:{"name":"",               "size":12, "oncampus":0},
+                                2021:{"name":"",               "size":12, "oncampus":0},
+                                2022:{"name":"",               "size":12, "oncampus":0},
+                                2023:{"name":"",               "size":12, "oncampus":0},}
             this.m_semester_num = 0;
+            this.m_semester_num_prev = 0;
+            this.m_semester = (this.m_semester_num % 2 == 0) ? "SPRING" : "FALL";
+            this.m_year = 2015+Math.floor(this.m_semester_num/2);
+            this.m_school_year = (this.m_semester == "SPRING") ? this.m_year : this.m_year+1;
             this.m_senior_name = this.class_names[2015];
             this.m_junior_name = this.class_names[2016];
             this.m_sophomore_name = this.class_names[2017];
@@ -160,36 +179,62 @@ function setUpTangle () {
 
             this.m_semester = (this.m_semester_num % 2 == 0) ? "SPRING" : "FALL";
             this.m_year = 2015+Math.floor(this.m_semester_num/2);
-            var m_school_year = (this.m_semester == "SPRING") ? this.m_year : this.m_year+1;
+            this.m_school_year = (this.m_semester == "SPRING") ? this.m_year : this.m_year+1;
             var m_budget_semester_name = (this.m_semester == "SPRING") ? "SPRING2015" : "FALL2014";
             this.m_budget = this.budget_housetotal[m_budget_semester_name]+this.budget_brothertotal[m_budget_semester_name];
 
-            this.m_senior_name = (m_school_year in this.class_names) ? this.class_names[m_school_year] : "Senior class";
-            this.m_senior_violating_bylaw = isClassViolatingBylaw(m_school_year, this.m_senior_size, this.m_senior_out_house);
+            if (this.m_semester_num != this.m_semester_num_prev) {
+                this.m_senior_size = this.m_class_info[this.m_school_year]["size"];
+                this.m_junior_size = this.m_class_info[this.m_school_year+1]["size"];
+                this.m_sophomore_size = this.m_class_info[this.m_school_year+2]["size"];
+                this.m_freshman_size = this.m_class_info[this.m_school_year+3]["size"];
 
-            this.m_junior_name = (m_school_year+1 in this.class_names) ? this.class_names[m_school_year+1] : "Junior class";
-            this.m_junior_violating_bylaw = isClassViolatingBylaw(m_school_year+1, this.m_junior_size, this.m_junior_out_house);
+                this.m_senior_out_house = this.m_class_info[this.m_school_year]["oncampus"];
+                this.m_junior_out_house = this.m_class_info[this.m_school_year+1]["oncampus"];
+                this.m_sophomore_out_house = this.m_class_info[this.m_school_year+2]["oncampus"];
+                this.m_freshman_out_house = this.m_class_info[this.m_school_year+3]["oncampus"];
 
-            this.m_sophomore_name = (m_school_year+2 in this.class_names) ? this.class_names[m_school_year+2] : "Sophomore class";
-            this.m_sophomore_violating_bylaw = isClassViolatingBylaw(m_school_year+2, this.m_sophomore_size, this.m_sophomore_out_house);
+                this.m_semester_num_prev = this.m_semester_num;
+            }
 
-            this.m_freshman_name = (m_school_year+3 in this.class_names) ? this.class_names[m_school_year+3] : "Freshman class";
+            var senior_info = this.m_class_info[this.m_school_year];
+            var junior_info = this.m_class_info[this.m_school_year+1];
+            var sophomore_info = this.m_class_info[this.m_school_year+2];
+            var freshman_info = this.m_class_info[this.m_school_year+3];
+
+            senior_info["size"] = this.m_senior_size;
+            senior_info["oncampus"] = this.m_senior_out_house;
+            junior_info["size"] = this.m_junior_size;
+            junior_info["oncampus"] = this.m_junior_out_house;
+            sophomore_info["size"] = this.m_sophomore_size;
+            sophomore_info["oncampus"] = this.m_sophomore_out_house;
+            freshman_info["size"] = this.m_freshman_size;
+
+            this.m_senior_name =    (senior_info["name"] != "")     ? senior_info["name"]   : "Senior class";
+            this.m_junior_name =    (junior_info["name"] != "")     ? junior_info["name"]   : "Junior class";
+            this.m_sophomore_name = (sophomore_info["name"] != "")  ? sophomore_info["name"]: "Sophomore class";
+            this.m_freshman_name =  (freshman_info["name"] != "")   ? freshman_info["name"] : "Freshman class";
+
+            this.m_senior_violating_bylaw =    isClassViolatingBylaw(this.m_school_year  , senior_info["size"]   , senior_info["oncampus"]);
+            this.m_junior_violating_bylaw =    isClassViolatingBylaw(this.m_school_year+1, junior_info["size"]   , junior_info["oncampus"]);
+            this.m_sophomore_violating_bylaw = isClassViolatingBylaw(this.m_school_year+2, sophomore_info["size"], sophomore_info["oncampus"]);
 
             this.m_any_fines = this.m_senior_violating_bylaw || this.m_junior_violating_bylaw || this.m_sophomore_violating_bylaw;
 
-            var m_nbros_inhouse = (this.m_senior_size-this.m_senior_out_house)+(this.m_junior_size-this.m_junior_out_house)+(this.m_sophomore_size-this.m_sophomore_out_house);
-            var m_nbros = this.m_senior_size+this.m_junior_size+this.m_sophomore_size;
+            var m_nbros_inhouse = (senior_info["size"]-senior_info["oncampus"])+(junior_info["size"]-junior_info["oncampus"])+(sophomore_info["size"]-sophomore_info["oncampus"]);
+            
+            var m_nbros = senior_info["size"]+junior_info["size"]+sophomore_info["size"];
             if (this.m_semester == "SPRING") {
-                m_nbros += this.m_freshman_size;
+                m_nbros += freshman_info["size"];
             }
 
             this.m_outbill = this.budget_brothertotal[m_budget_semester_name]/m_nbros;
             this.m_housebill = this.budget_housetotal[m_budget_semester_name]/m_nbros_inhouse+this.m_outbill;
 
             var m_nbros_shouldbe_inhouse = 0; 
-            m_nbros_shouldbe_inhouse += Math.max(this.m_senior_size-this.m_senior_out_house, Math.min(this.m_senior_size,12));
-            m_nbros_shouldbe_inhouse += Math.max(this.m_junior_size-this.m_junior_out_house, Math.min(this.m_junior_size,12));
-            m_nbros_shouldbe_inhouse += Math.max(this.m_sophomore_size-this.m_sophomore_out_house, Math.min(this.m_sophomore_size,12));
+            m_nbros_shouldbe_inhouse += Math.max(senior_info["size"]-senior_info["oncampus"], Math.min(senior_info["size"],12));
+            m_nbros_shouldbe_inhouse += Math.max(junior_info["size"]-junior_info["oncampus"], Math.min(junior_info["size"],12));
+            m_nbros_shouldbe_inhouse += Math.max(sophomore_info["size"]-sophomore_info["oncampus"], Math.min(sophomore_info["size"],12));
 
             this.m_outbill2 = this.budget_brothertotal[m_budget_semester_name]/m_nbros;
             this.m_housebill2 = this.budget_housetotal[m_budget_semester_name]/m_nbros_shouldbe_inhouse+this.m_outbill2;
