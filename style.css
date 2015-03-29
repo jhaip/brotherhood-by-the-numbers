@@ -9,7 +9,7 @@ body {
 	font-weight: bold;
 }
 .meat {
-	width: 700px;
+	max-width: 700px;
 	margin: 0 auto;
 }
 blockquote {
@@ -38,6 +38,16 @@ img {
 	margin-left: auto;
 	margin-right: auto;
 }
+#house_img {
+	width: 400px;
+	margin-left: auto;
+	margin-right: auto;
+}
+#new_img {
+	width: 400px;
+	margin-left: auto;
+	margin-right: auto;
+}
 
 .violateBylaw {
 	color: red;
@@ -56,11 +66,11 @@ img {
 #modelTable {
 	border: 0;
 	cellspacing: 0;
-	white-space: nowrap;
+	
 }
 #modelTable td {
 	padding: 5px 10px 5px 0px;
-	display: table-cell;
+	white-space: nowrap;
 }
 
 .highlight {

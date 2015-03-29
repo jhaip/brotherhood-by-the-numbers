@@ -79,6 +79,9 @@ function setUpTangle () {
             this.class_names = {2015:"Circle Jackers", 2016:"Minute Men", 2017:"Chilly Willies", 2018:"Jailbaters"};
 
             this.initModel();
+
+            this.img_house = 3;
+            this.img_new = 1;
         },
         initModel: function() {
             this.m_class_info ={2015:{"name":"Circle Jackers", "size":11, "oncampus":1},
@@ -90,22 +93,24 @@ function setUpTangle () {
                                 2021:{"name":"",               "size":12, "oncampus":0},
                                 2022:{"name":"",               "size":12, "oncampus":0},
                                 2023:{"name":"",               "size":12, "oncampus":0},}
-            this.m_semester_num = 0;
-            this.m_semester_num_prev = 0;
+            this.m_semester_num = 1;
+            this.m_semester_num_prev = this.m_semester_num;
             this.m_semester = (this.m_semester_num % 2 == 0) ? "SPRING" : "FALL";
             this.m_year = 2015+Math.floor(this.m_semester_num/2);
             this.m_school_year = (this.m_semester == "SPRING") ? this.m_year : this.m_year+1;
-            this.m_senior_name = this.class_names[2015];
-            this.m_junior_name = this.class_names[2016];
-            this.m_sophomore_name = this.class_names[2017];
-            this.m_freshman_name = this.class_names[2018];
-            this.m_senior_size = 11;
-            this.m_senior_out_house = 1;
-            this.m_junior_size = 6;
-            this.m_junior_out_house = 1;
-            this.m_sophomore_size = 13;
-            this.m_sophomore_out_house = 3;
-            this.m_freshman_size = 10;
+            this.m_senior_name = this.m_class_info[this.m_school_year]["name"];
+            this.m_junior_name = this.m_class_info[this.m_school_year+1]["name"];
+            this.m_sophomore_name = this.m_class_info[this.m_school_year+2]["name"];
+            this.m_freshman_name = this.m_class_info[this.m_school_year+3]["name"];
+            this.m_senior_size = this.m_class_info[this.m_school_year]["size"];
+            this.m_junior_size = this.m_class_info[this.m_school_year+1]["size"];
+            this.m_sophomore_size = this.m_class_info[this.m_school_year+2]["size"];
+            this.m_freshman_size = this.m_class_info[this.m_school_year+3]["size"];
+
+            this.m_senior_out_house = this.m_class_info[this.m_school_year]["oncampus"];
+            this.m_junior_out_house = this.m_class_info[this.m_school_year+1]["oncampus"];
+            this.m_sophomore_out_house = this.m_class_info[this.m_school_year+2]["oncampus"];
+            this.m_freshman_out_house = this.m_class_info[this.m_school_year+3]["oncampus"];
             this.m_reset = 0;
             this.m_reset_prev = 0;
             this.m_any_fines = true;
@@ -165,6 +170,8 @@ function setUpTangle () {
             this.a_allin_housebill = this.budget_housetotal["SPRING2015"]/this.nbros["FALL2015"]+this.budget_brothertotal["SPRING2015"]/(this.nbros["FALL2015"]+this.a_newbros);
             this.a_actual_housebill = this.budget_housetotal["SPRING2015"]/(this.nbros["FALL2015"]-this.a_nbro_outhouse)+this.budget_brothertotal["SPRING2015"]/(this.nbros["FALL2015"]+this.a_newbros);
             this.a_inhouse_extrafee = this.a_actual_housebill - this.a_allin_housebill;
+
+            this.img_new = Math.min(3,Math.floor(this.a_nbro_outhouse/3));
 
             /* Increasing brother size */
             SEMESTER = (this.b_semester == 0) ? "FALL2014" : "SPRING2015";
@@ -238,6 +245,9 @@ function setUpTangle () {
 
             this.m_outbill2 = this.budget_brothertotal[m_budget_semester_name]/m_nbros;
             this.m_housebill2 = this.budget_housetotal[m_budget_semester_name]/m_nbros_shouldbe_inhouse+this.m_outbill2;
+
+            /* House Image */
+            this.img_house = Math.min(9,Math.floor((m_nbros_inhouse-20)/2));
         }
     });
 
