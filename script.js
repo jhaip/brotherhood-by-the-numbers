@@ -17,6 +17,15 @@ function setUpTangle () {
         return "";
     }
 
+    Tangle.formats.semesterDrag = function(value) {
+        var str = "";
+        str += (2015+Math.floor(value/2)).toString();
+        str += " ";
+        str += (value % 2 == 0) ? "Spring" : "Fall";
+        str += " Semester";
+        return str;
+    }
+
     Tangle.classes.v_if = {
         //initialize: function (element, options, tangle, variable) { ... },  // optional
         update: function (element, value) {
@@ -66,9 +75,7 @@ function setUpTangle () {
             this.initModel();
         },
         initModel: function() {
-            this.m_semester_num = 1;
-            this.m_semester = "SPRING";
-            this.m_year = 2015;
+            this.m_semester_num = 0;
             this.m_senior_name = this.class_names[2015];
             this.m_junior_name = this.class_names[2016];
             this.m_sophomore_name = this.class_names[2017];
@@ -151,7 +158,8 @@ function setUpTangle () {
             this.m_sophomore_out_house = Math.min(this.m_sophomore_size, this.m_sophomore_out_house);
             this.m_freshman_out_house = Math.min(this.m_freshman_size, this.m_freshman_out_house);
 
-            this.m_semester = (this.m_semester_num == 0) ? "FALL" : "SPRING";
+            this.m_semester = (this.m_semester_num % 2 == 0) ? "SPRING" : "FALL";
+            this.m_year = 2015+Math.floor(this.m_semester_num/2);
             var m_school_year = (this.m_semester == "SPRING") ? this.m_year : this.m_year+1;
             var m_budget_semester_name = (this.m_semester == "SPRING") ? "SPRING2015" : "FALL2014";
             this.m_budget = this.budget_housetotal[m_budget_semester_name]+this.budget_brothertotal[m_budget_semester_name];
